@@ -1,16 +1,4 @@
-## [PureMVC](http://puremvc.github.com/) C++ MultiCore Framework
-PureMVC is a lightweight framework for creating applications based upon the classic [Model-View-Controller](http://en.wikipedia.org/wiki/Model-view-controller) design meta-pattern. This is a C++ port of the [AS3 reference implementation of the MultiCore Version](https://github.com/PureMVC/puremvc-as3-multicore-framework/wiki). It supports [modular programming](http://en.wikipedia.org/wiki/Modular_programming) through the use of [Multiton](http://en.wikipedia.org/wiki/Multiton) Core actors.
-
-* [API Docs](http://darkstar.puremvc.org/content_header.html?url=http://puremvc.org/pages/docs/CPP/multicore&desc=PureMVC%20API%20Docs:%20PureMVC%20MultiCore%20for%20C%2B%2B)
-* [Discussion](http://forums.puremvc.org/index.php?board=104.0)
-* [Overview Presentation](http://puremvc.tv/#P002)
-
-
-## Status
-Production - [Version 1.0](https://github.com/PureMVC/puremvc-cpp-multicore-framework/blob/master/VERSION)
-
-## Platforms / Technologies
-* [C++](http://en.wikipedia.org/wiki/C%2B%2B)
+## PureMVC 个人学习之用
 
 ## License
 * PureMVC MultiCore Framework for C++ (Ported) - Copyright © 2012 Tang Khai Phuong 
