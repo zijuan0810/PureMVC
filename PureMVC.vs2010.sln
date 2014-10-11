@@ -1,12 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{25325B79-2612-4E4A-9BAB-49406161F2A5}"
-	ProjectSection(SolutionItems) = preProject
-		license.txt = license.txt
-		version.txt = version.txt
-	EndProjectSection
-EndProject
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PureMVC", "PureMVC.vs2010.vcxproj", "{8E6DD691-B2F0-4567-8A4D-92DFDE03CB50}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestSuite", "testsuite\TestSuite.vs2010.vcxproj", "{A0E5F375-EE50-414B-A083-C879493B47B3}"

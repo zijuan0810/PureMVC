@@ -19,49 +19,47 @@
 
 #include "INotifier.hpp"
 
-namespace PureMVC
+NS_INTERFACES_BEGIN
+
+struct PUREMVC_API IProxy : public virtual INotifier
 {
-    namespace Interfaces
-    {
-        struct PUREMVC_API IProxy : public virtual INotifier
-        {
-            /**
-             * Get the Proxy name
-             *
-             * @return the Proxy instance name
-             */
-            virtual std::string const& getProxyName(void) const = 0;
+	/**
+	 * Get the Proxy name
+	 *
+	 * @return the Proxy instance name
+	 */
+	virtual std::string const& getProxyName(void) const = 0;
 
-            /**
-             * Set the data object
-             *
-             * @param data the data object
-             */
-            virtual void setData(void const* data) = 0;
+	/**
+	 * Set the data object
+	 *
+	 * @param data the data object
+	 */
+	virtual void setData(void const* data) = 0;
 
-            /**
-             * Get the data object
-             *
-             * @return the data as type void*
-             */
-            virtual void const* getData(void) const = 0;
+	/**
+	 * Get the data object
+	 *
+	 * @return the data as type void*
+	 */
+	virtual void const* getData(void) const = 0;
 
-            /**
-             * Called by the Model when the Proxy is registered
-             */
-            virtual void onRegister(void) = 0;
+	/**
+	 * Called by the Model when the Proxy is registered
+	 */
+	virtual void onRegister(void) = 0;
 
-            /**
-             * Called by the Model when the Proxy is removed
-             */
-            virtual void onRemove(void) = 0;
+	/**
+	 * Called by the Model when the Proxy is removed
+	 */
+	virtual void onRemove(void) = 0;
 
-            /**
-             * Virtual destructor.
-             */
-            virtual ~IProxy(void);
-        };
-    }
-}
+	/**
+	 * Virtual destructor.
+	 */
+	virtual ~IProxy(void);
+};
+
+NS_INTERFACES_END
 
 #endif /* __PUREMVC_INTERFACES_IPROXY_HPP__ */

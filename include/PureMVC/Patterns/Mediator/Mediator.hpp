@@ -20,114 +20,112 @@
 #include "../../Interfaces/ICommand.hpp"
 #include "../Observer/Notifier.hpp"
 
-namespace PureMVC
+NS_PATTERNS_BEGIN
+
+using Interfaces::IMediator;
+using Interfaces::INotifier;
+
+/**
+ * A base <code>IMediator</code> implementation.
+ *
+ * @see Core/View.hpp PureMVC::Core::View
+ */
+class PUREMVC_API Mediator
+	: public virtual IMediator
+	, public virtual INotifier
+	, public Notifier
 {
-    namespace Patterns
-    {
-        using Interfaces::IMediator;
-        using Interfaces::INotifier;
+public:
+	/**
+	 * Copy constructor.
+	 */
+	explicit Mediator(Mediator const& arg);
 
-        /**
-         * A base <code>IMediator</code> implementation.
-         *
-         * @see Core/View.hpp PureMVC::Core::View
-         */
-        class PUREMVC_API Mediator
-            : public virtual IMediator
-            , public virtual INotifier
-            , public Notifier
-        {
-        public:
-            /**
-             * Copy constructor.
-             */
-            explicit Mediator(Mediator const& arg);
+public:
+	/**
+	 * Constructor.
+	 */
+	Mediator(std::string const& mediator_name = Mediator::NAME, void const* view_component = NULL);
 
-        public:
-            /**
-             * Constructor.
-             */
-            Mediator(std::string const& mediator_name = Mediator::NAME, void const* view_component = NULL);
+	/**
+	 * Get the name of the <code>Mediator</code>.
+	 */
+	virtual std::string const& getMediatorName(void) const;
 
-            /**
-             * Get the name of the <code>Mediator</code>.
-             */
-            virtual std::string const& getMediatorName(void) const;
+	/**
+	 * Set the <code>IMediator</code>'s view component.
+	 *
+	 * @param view_component the view component.
+	 */
+	virtual void setViewComponent(void const* view_component);
 
-            /**
-             * Set the <code>IMediator</code>'s view component.
-             *
-             * @param view_component the view component.
-             */
-            virtual void setViewComponent(void const* view_component);
+	/**
+	 * Get the <code>Mediator</code>'s view component.
+	 *
+	 * <P>
+	 * Additionally, an implicit getter will usually
+	 * be defined in the subclass that casts the view
+	 * object to a type</P>
+	 *
+	 * @return the view component.
+	 */
+	virtual void const* getViewComponent(void) const;
 
-            /**
-             * Get the <code>Mediator</code>'s view component.
-             *
-             * <P>
-             * Additionally, an implicit getter will usually
-             * be defined in the subclass that casts the view
-             * object to a type</P>
-             *
-             * @return the view component.
-             */
-            virtual void const* getViewComponent(void) const;
+	/**
+	 * List the <code>INotification</code> names this
+	 * <code>Mediator</code> is interested in being notified of.
+	 *
+	 * @return Array the list of <code>INotification</code> names.
+	 */
+	virtual Mediator::NotificationNames listNotificationInterests(void) const;
 
-            /**
-             * List the <code>INotification</code> names this
-             * <code>Mediator</code> is interested in being notified of.
-             *
-             * @return Array the list of <code>INotification</code> names.
-             */
-            virtual Mediator::NotificationNames listNotificationInterests(void) const;
+	/**
+	 * Handle <code>INotification</code>s.
+	 *
+	 * <P>
+	 * Typically this will be handled in a switch statement,
+	 * with one 'case' entry per <code>INotification</code>
+	 * the <code>Mediator</code> is interested in.
+	 */
+	virtual void handleNotification(INotification const& notification);
 
-            /**
-             * Handle <code>INotification</code>s.
-             *
-             * <P>
-             * Typically this will be handled in a switch statement,
-             * with one 'case' entry per <code>INotification</code>
-             * the <code>Mediator</code> is interested in.
-             */
-            virtual void handleNotification(INotification const& notification);
+	/**
+	 * Called by the View when the Mediator is registered.
+	 */
+	virtual void onRegister(void);
 
-            /**
-             * Called by the View when the Mediator is registered.
-             */
-            virtual void onRegister(void);
+	/**
+	 * Called by the View when the Mediator is removed.
+	 */
+	virtual void onRemove(void);
 
-            /**
-             * Called by the View when the Mediator is removed.
-             */
-            virtual void onRemove(void);
+	/**
+	 * Copy operator
+	 */
+	Mediator& operator=(Mediator const& arg);
 
-            /**
-             * Copy operator
-             */
-            Mediator& operator=(Mediator const& arg);
+	/**
+	 * Virtual destructor.
+	 */
+	virtual ~Mediator(void);
 
-            /**
-             * Virtual destructor.
-             */
-            virtual ~Mediator(void);
+	/**
+	 * The name of the <code>Mediator</code>.
+	 *
+	 * <P>
+	 * Typically, a <code>Mediator</code> will be written to serve
+	 * one specific control or group controls and so,
+	 * will not have a need to be dynamically named.</P>
+	 */
+protected:
+	// the mediator name
+	std::string _mediator_name;
+	// The view component
+	void const* _view_component;
+public:
+	static char const* const NAME;
+};
 
-            /**
-             * The name of the <code>Mediator</code>.
-             *
-             * <P>
-             * Typically, a <code>Mediator</code> will be written to serve
-             * one specific control or group controls and so,
-             * will not have a need to be dynamically named.</P>
-             */
-        protected:
-            // the mediator name
-            std::string _mediator_name;
-            // The view component
-            void const* _view_component;
-        public:
-            static char const* const NAME;
-        };
-    }
-}
+NS_PATTERNS_END
 
 #endif /* __PUREMVC_PATTERNS_MEDIATOR_MEDIATOR_HPP__ */

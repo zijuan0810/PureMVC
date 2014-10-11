@@ -105,112 +105,128 @@ namespace std {
 }
 #endif
 
-namespace PureMVC
+#if !defined(NS_PUREMVC_BEGIN)
+#define NS_PUREMVC_BEGIN namespace PureMVC {
+#define NS_PUREMVC_END }
+#endif
+
+#if !defined(NS_PATTERNS_BEGIN)
+#define NS_PATTERNS_BEGIN namespace PureMVC { namespace Patterns {
+#define NS_PATTERNS_END }}
+#endif
+
+#if !defined(NS_INTERFACES_BEGIN)
+#define NS_INTERFACES_BEGIN namespace PureMVC { namespace Interfaces {
+#define NS_INTERFACES_END }}
+#endif
+
+NS_PUREMVC_BEGIN
+
+/**
+ *  Unique lock helper
+ */
+template<typename _Lockable>
+class UniqueLock
 {
-    /**
-     *  Unique lock helper
-     */
-    template<typename _Lockable>
-    class UniqueLock
-    {
-    private:
-        _Lockable& _lockable;
-    private:
-        UniqueLock(UniqueLock const&);
-        UniqueLock& operator=(UniqueLock const&);
-    public:
-        /**
-         * Construct <c>UniqueLock</c> with lockable target.
-         *
-         * @param lockable the target to lock.
-         */
-        explicit UniqueLock(_Lockable& lockable)
-            : _lockable(lockable)
-        {
-            _lockable.lock();
-        }
+private:
+	_Lockable& _lockable;
+private:
+	UniqueLock(UniqueLock const&);
+	UniqueLock& operator=(UniqueLock const&);
+public:
+	/**
+	 * Construct <c>UniqueLock</c> with lockable target.
+	 *
+	 * @param lockable the target to lock.
+	 */
+	explicit UniqueLock(_Lockable& lockable)
+		: _lockable(lockable)
+	{
+		_lockable.lock();
+	}
 
-        /**
-         * Release lock.
-         */
-        ~UniqueLock(void)
-        {
-            _lockable.unlock();
-        }
-    };
+	/**
+	 * Release lock.
+	 */
+	~UniqueLock(void)
+	{
+		_lockable.unlock();
+	}
+};
 
-    /**
-     * Mutex class of PureMVC.
-     */
-    class PUREMVC_API Mutex
-    {
-    private:
-        void* _mutex;
-    public:
-        typedef UniqueLock<Mutex> ScopedLock;
-    public:
-        /**
-         * Default constructor.
-         */
-        explicit Mutex(void);
-    public:
-        /**
-         * Locks the mutex. Blocks if the mutex is held by another thread.
-         */
-        void lock(void);
+/**
+ * Mutex class of PureMVC.
+ */
+class PUREMVC_API Mutex
+{
+private:
+	void* _mutex;
+public:
+	typedef UniqueLock<Mutex> ScopedLock;
+public:
+	/**
+	 * Default constructor.
+	 */
+	explicit Mutex(void);
+public:
+	/**
+	 * Locks the mutex. Blocks if the mutex is held by another thread.
+	 */
+	void lock(void);
 
-        /**
-         * Tries to lock the mutex. Returns false immediately if the mutex is already held by another thread. Returns true if the mutex was successfully locked.
-         */
-        bool tryLock(void);
+	/**
+	 * Tries to lock the mutex. Returns false immediately if the mutex is already held by another thread. Returns true if the mutex was successfully locked.
+	 */
+	bool tryLock(void);
 
-        /**
-         * Unlocks the mutex so that it can be acquired by other threads.
-         */
-        void unlock(void);
+	/**
+	 * Unlocks the mutex so that it can be acquired by other threads.
+	 */
+	void unlock(void);
 
-        /**
-         * Destructor.
-         */
-        ~Mutex(void);
-    };
+	/**
+	 * Destructor.
+	 */
+	~Mutex(void);
+};
 
-    /**
-     * FastMutex class of PureMVC.
-     */
-    class PUREMVC_API FastMutex
-    {
-    private:
-        void* _mutex;
-    public:
-        typedef UniqueLock<FastMutex> ScopedLock;
-    public:
-        /**
-         * Default constructor.
-         */
-        explicit FastMutex(void);
-    public:
-        /**
-         * Locks the mutex. Blocks if the mutex is held by another thread.
-         */
-        void lock(void);
+/**
+ * FastMutex class of PureMVC.
+ */
+class PUREMVC_API FastMutex
+{
+private:
+	void* _mutex;
+public:
+	typedef UniqueLock<FastMutex> ScopedLock;
+public:
+	/**
+	 * Default constructor.
+	 */
+	explicit FastMutex(void);
+public:
+	/**
+	 * Locks the mutex. Blocks if the mutex is held by another thread.
+	 */
+	void lock(void);
 
-        /**
-         * Tries to lock the mutex. Returns false immediately if the mutex is already held by another thread. Returns true if the mutex was successfully locked.
-         */
-        bool tryLock(void);
+	/**
+	 * Tries to lock the mutex. Returns false immediately if the mutex is already held by another thread. Returns true if the mutex was successfully locked.
+	 */
+	bool tryLock(void);
 
-        /**
-         * Unlocks the mutex so that it can be acquired by other threads.
-         */
-        void unlock(void);
+	/**
+	 * Unlocks the mutex so that it can be acquired by other threads.
+	 */
+	void unlock(void);
 
-        /**
-         * Destructor.
-         */
-        ~FastMutex(void);
-    };
-}
+	/**
+	 * Destructor.
+	 */
+	~FastMutex(void);
+};
+
+NS_PUREMVC_END
 
 #if !defined(__PUREMVC_INCLUDE__)
 #define __PUREMVC_INCLUDE__
@@ -241,111 +257,112 @@ namespace PureMVC
 #include "Core/Controller.hpp"
 #endif
 
-namespace PureMVC
+NS_PUREMVC_BEGIN
+
+/**
+ * Create container of internal cache.
+ */
+ PUREMVC_API void createCache(void);
+
+/**
+ * Clean all instance from internal cache.
+ */
+PUREMVC_API void cleanCache(void);
+
+using Interfaces::ICommand;
+using Interfaces::INotification;
+
+/**
+ * Thread base PureMVC.
+ */
+class PUREMVC_API Thread
 {
-    /**
-     * Create container of internal cache.
-     */
-    PUREMVC_API void createCache(void);
+private:
+	bool _auto_destroy;
+	ICommand* _command;
+	mutable FastMutex _mutex;
+	void* _thread_handler;
+	std::size_t _stack_size;
+	Thread& operator=(Thread const&);
+public:
+	/**
+	 * Default constructor.
+	 *
+	 * @param destroyable_command to run in thread.
+	 * This command will be destroy in Thread's destructor.
+	 */
+	explicit Thread(ICommand* destroyable_command);
 
-    /**
-     * Clean all instance from internal cache.
-     */
-    PUREMVC_API void cleanCache(void);
+	/**
+	 * Default constructor.
+	 *
+	 * @param command to run in thread.
+	 */
+	explicit Thread(ICommand& command);
 
-    using Interfaces::ICommand;
-    using Interfaces::INotification;
+public:
+	/**
+	 * Sets the thread's stack size in bytes.
+	 */
+	void setStackSize(std::size_t size);
 
-    /**
-     * Thread base PureMVC.
-     */
-    class PUREMVC_API Thread
-    {
-    private:
-        bool _auto_destroy;
-        ICommand* _command;
-        mutable FastMutex _mutex;
-        void* _thread_handler;
-        std::size_t _stack_size;
-        Thread& operator=(Thread const&);
-    public:
-        /**
-         * Default constructor.
-         *
-         * @param destroyable_command to run in thread. 
-         * This command will be destroy in Thread's destructor.
-         */
-        explicit Thread(ICommand* destroyable_command);
+	/**
+	 * Returns the thread's stack size in bytes.
+	 *
+	 * @return the default stack size is used.
+	 */
+	std::size_t getStackSize() const;
 
-        /**
-         * Default constructor.
-         *
-         * @param command to run in thread.
-         */
-        explicit Thread(ICommand& command);
+	/**
+	 * Start thread with notification.
+	 *
+	 * @param notification parameter.
+	 */
+	void start(INotification const& notification);
 
-    public:
-        /**
-         * Sets the thread's stack size in bytes.
-         */
-        void setStackSize(std::size_t size);
+	/**
+	 * Start thread with notification.
+	 *
+	 * @param destroyable_notification parameter will be destroy by Thread.
+	 */
+	void start(INotification const* destroyable_notification);
 
-        /**
-         * Returns the thread's stack size in bytes.
-         *
-         * @return the default stack size is used.
-         */
-        std::size_t getStackSize() const;
+	/**
+	 * Returns true if the thread is running.
+	 */
+	bool isRunning(void) const;
 
-        /**
-         * Start thread with notification.
-         *
-         * @param notification parameter.
-         */
-        void start(INotification const& notification);
+	/**
+	 * Waits until the thread completes execution.
+	 */
+	void join(void);
 
-        /**
-         * Start thread with notification. 
-         *
-         * @param destroyable_notification parameter will be destroy by Thread.
-         */
-        void start(INotification const* destroyable_notification);
+	/**
+	 * Waits for at most the given interval for the thread to complete.
+	 */
+	void join(long milliseconds);
 
-        /**
-         * Returns true if the thread is running.
-         */
-        bool isRunning(void) const;
+	/**
+	 * Waits for at most the given interval for the thread to complete.
+	 */
+	bool tryJoin(long milliseconds);
 
-        /**
-         * Waits until the thread completes execution.
-         */
-        void join(void);
+	/**
+	 * Suspends the current thread for the specified amount of time.
+	 */
+	static void sleep(long milliseconds);
 
-        /**
-         * Waits for at most the given interval for the thread to complete.
-         */
-        void join(long milliseconds);
+	/**
+	 * Get current thread id.
+	 */
+	static std::string getCurrentThreadId(void);
 
-        /**
-         * Waits for at most the given interval for the thread to complete.
-         */
-        bool tryJoin(long milliseconds);
+	/**
+	 * Destructor.
+	 */
+	~Thread();
+};
 
-        /**
-         * Suspends the current thread for the specified amount of time.
-         */
-        static void sleep(long milliseconds);
-
-        /**
-         * Get current thread id.
-         */
-        static std::string getCurrentThreadId(void);
-
-        /**
-         * Destructor.
-         */
-        ~Thread();
-    };
-}
+NS_PUREMVC_END
 
 #endif /* __PUREMVC_HPP__ */
